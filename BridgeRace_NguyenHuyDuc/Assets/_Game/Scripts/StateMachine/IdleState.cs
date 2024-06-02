@@ -2,19 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleState : IState<Character>
+public class IdleState : IState<Bot>
 {
-    public void OnEnter(Character t)
+    float timer;
+    private float randomTime;
+    public void OnEnter(Bot bot)
     {
-
+        bot.StopMoving();
+        timer=0;
+        randomTime=Random.Range(2f, 4f);
     }
 
-    public void OnExecute(Character t)
+    public void OnExecute(Bot bot)
     {
-
+        timer+=Time.fixedDeltaTime;
+        if(timer>randomTime){
+            bot.ChangeState(new PatrolState());
+        }
     }
 
-    public void OnExit(Character t)
+    public void OnExit(Bot bot)
     {
 
     }

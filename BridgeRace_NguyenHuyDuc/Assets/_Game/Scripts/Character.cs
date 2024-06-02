@@ -1,14 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GlobalEnum;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 public class Character : GameUnit
 {
 
     public ColorByEnum ColorByEnum;
 
-    [SerializeField]protected CharacterController characterController;
+    [SerializeField] protected CharacterController characterController;
+    public int NumberOfBricks = 0;
+
+    protected bool isMovable;
 
     private string currAnim = "idle";
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
@@ -19,6 +25,9 @@ public class Character : GameUnit
     [SerializeField] protected Transform raycastPos;
     protected bool isMoving = false;
     [SerializeField] public Transform brickBag;
+    [Header("Character Brick")]
+    public CharacterBrick characterBrickPrefab;
+    public List<CharacterBrick> brickHolder;
 
     protected enum Direct
     {
@@ -31,10 +40,27 @@ public class Character : GameUnit
 
     [Header("Player step climb")]
     [SerializeField] Transform stepRayUpper;
-    [SerializeField] Transform stepRayLower;
     [SerializeField] float stepSmooth = 0.5f;
+    private float brickHeight;
+
+    private void Awake()
+    {
+        isMovable = true;
+
+    }
+
+    protected virtual void OnInit(){
+
+    }
 
 
+    protected bool IsGrounded()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, .8f))
+            return true;
+        return false; 
+
+    }
 
 
     public void SetCharacterColor(int index)
@@ -52,11 +78,12 @@ public class Character : GameUnit
         }
     }
 
-    protected void StopMoving()
+    protected virtual void StopMoving()
     {
         isMoving = false;
         ChangeAnim("idle");
         direct = Direct.None;
+        rb.velocity = Vector3.zero;
     }
 
     protected virtual void Running()
@@ -66,51 +93,75 @@ public class Character : GameUnit
 
     protected virtual void FixedUpdate()
     {
-        Debug.Log(direct);
         if (direct == Direct.Forward)
         {
             ConstructingBridge();
             GoUpStair();
+            return;
         }
-        else if (direct == Direct.Backward)
+        if (direct == Direct.Backward)
         {
-            // GoDown();
+            GoDown();
+            isMovable = true;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        CollideWithBrick(other);
+    }
+
+    private void CollideWithBrick(Collider other)
+    {
+        if (!other.CompareTag(GlobalConstants.Tag.BRICK)) return;
+        Brick brick = Cache.GetBrick(other);
+        if (brick.ColorByEnum != ColorByEnum) return;
+        SpawnCharacterBrick();
+        brick.TurnOff();
     }
 
     public void ConstructingBridge()
     {
-        if (Physics.Raycast(raycastPos.position, Vector3.down, out RaycastHit hit, 1f))
+        Debug.Log("BBBBBBBB");
+        if (!Physics.Raycast(raycastPos.position, Vector3.down, out RaycastHit hit, 1f)) return;
+        if (!hit.collider.CompareTag(GlobalConstants.Tag.Stair)) return;
+        Stair stair = Cache.GetStair(hit.collider);
+        if (stair.ColorByEnum == ColorByEnum)
         {
-            if (hit.collider.CompareTag(GlobalConstants.Tag.Stair))
-            {
-                Stair stair = Cache.GetStair(hit.collider);
-                stair.SetStairColor((int)ColorByEnum);
-
-            }
+            isMovable = true;
+            return;
         }
+        if (!(brickHolder.Count > 0))
+        {
+            isMovable = false;
+            return;
+        }
+        stair.SetStairColor((int)ColorByEnum);
+        stair.ActiveRenderer();
+        SimplePool.Despawn(brickHolder[^1]);
+        brickHolder.Remove(brickHolder[^1]);
+        brickHeight -= 0.3f;
+        isMovable = true;
     }
 
     private void GoDown()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, .8f))
-        {                   
-                    rb.position -= new Vector3(0, stepSmooth, 0);         
+        
+        if (!IsGrounded())
+        {
+            rb.position -= new Vector3(0, stepSmooth, 0);
         }
     }
 
     private void GoUpStair()
     {
-        if (Physics.Raycast(stepRayUpper.position, transform.TransformDirection(Vector3.forward), out RaycastHit hitUpper, .3f))
-        {           
-                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, .85f))
-                {
-                    Debug.Log(hit.collider.tag);
-                    if (hit.collider.CompareTag(GlobalConstants.Tag.Stair))
-                        
-                        rb.position -= new Vector3(0, -stepSmooth, 0);
+        if (!Physics.Raycast(stepRayUpper.position, Vector3.forward, out RaycastHit hitUpper, .3f))
+            return;
+        if (IsGrounded())
+        {
+            Debug.Log("A");
+            rb.position -= new Vector3(0, -stepSmooth, 0);
 
-                }
         }
     }
 
@@ -118,9 +169,19 @@ public class Character : GameUnit
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(stepRayUpper.position, stepRayUpper.position + new Vector3(0, 0, 0.3f));
-        Gizmos.DrawLine(stepRayLower.position, stepRayLower.position + new Vector3(0, 0, .25f));
-        Gizmos.DrawLine(raycastPos.position, raycastPos.position + new Vector3(0, .85f, 0));
+        Gizmos.DrawLine(raycastPos.position, raycastPos.position + new Vector3(0, -1f, 0));
+
     }
 
-
+    internal void SpawnCharacterBrick()
+    {
+        brickHeight += 0.3f;
+        Vector3 brickPos = new(brickBag.position.x, brickBag.position.y + brickHeight, brickBag.position.z);
+        CharacterBrick characterBrick = SimplePool.Spawn<CharacterBrick>(characterBrickPrefab);
+        characterBrick.transform.SetParent(brickBag);
+        characterBrick.transform.localRotation = characterBrickPrefab.transform.rotation;
+        characterBrick.SetPosition(brickPos);
+        characterBrick.SetBrickColor((int)ColorByEnum);
+        brickHolder.Add(characterBrick);
+    }
 }

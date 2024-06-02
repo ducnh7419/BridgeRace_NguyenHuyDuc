@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
+    private Transform target;
     [SerializeField] private float smoothSpeed;
     [SerializeField]Vector3 offset = new Vector3(-3,10,-20);
+
+    public Transform Target { get => target; set => target = value; }
 
     // Update is called once per frame
     void LateUpdate()

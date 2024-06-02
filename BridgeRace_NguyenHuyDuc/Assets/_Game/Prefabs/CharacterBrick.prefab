@@ -9,10 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1966138847563518290}
-  - component: {fileID: 3296268263323628884}
-  - component: {fileID: 2380453473699301739}
+  - component: {fileID: 7698702823584376937}
   m_Layer: 0
-  m_Name: Brick
+  m_Name: CharacterBrick
   m_TagString: Brick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +33,7 @@ Transform:
   - {fileID: 4625943499755852172}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!114 &3296268263323628884
+--- !u!114 &7698702823584376937
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,35 +42,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 565718603339926028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12331db6f48223446b7c8b260b56ab43, type: 3}
+  m_Script: {fileID: 11500000, guid: a339dc285f3ddc64b924c5460061edbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolType: 1
+  poolType: 5
   ColorByEnum: 0
   meshRenderer: {fileID: 4643095484661975746}
-  boxCollider: {fileID: 2380453473699301739}
+  boxCollider: {fileID: 0}
   colorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
---- !u!65 &2380453473699301739
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565718603339926028}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.31148958}
-  m_Center: {x: 0, y: -3.8248959e-16, z: 0.15191528}
 --- !u!1001 &4628827459941021593
 PrefabInstance:
   m_ObjectHideFlags: 0
