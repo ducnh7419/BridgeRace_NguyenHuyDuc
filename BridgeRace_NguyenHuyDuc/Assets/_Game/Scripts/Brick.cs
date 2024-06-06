@@ -34,7 +34,7 @@ public class Brick : GameUnit
     }
 
     private IEnumerator CoDelayReappear() {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         TurnOn();
     }
 

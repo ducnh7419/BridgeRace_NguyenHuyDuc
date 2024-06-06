@@ -7,6 +7,9 @@ TagManager:
   - Bot
   - Brick
   - Stair
+  - BridgeTile
+  - Door
+  - Podium
   layers:
   - Default
   - TransparentFX

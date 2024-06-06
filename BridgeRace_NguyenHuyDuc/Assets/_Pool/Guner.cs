@@ -33,7 +33,7 @@
 //     //de dung duoc pool thi object phai ke thua gameunit
 
 //     public void Fire()
-//     {
+//     {        
 //         for (int i = 0; i < bulletPoints.Length; i++)
 //         {
 //             //cach 1 lay prefab truc tiep

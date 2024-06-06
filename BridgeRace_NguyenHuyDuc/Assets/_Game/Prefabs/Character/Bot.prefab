@@ -80,8 +80,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
@@ -99,12 +99,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolType: 3
   ColorByEnum: 0
+  characterController: {fileID: 0}
+  NumberOfBricks: 0
+  IsMovable: 0
   meshRenderer: {fileID: 1157112073217406579}
   colorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
   rb: {fileID: 6531766847217719102}
   animator: {fileID: 1622770265859751951}
   speed: 600
   raycastPos: {fileID: 0}
+  brickBag: {fileID: 0}
+  characterBrickPrefab: {fileID: 0}
+  brickHolder: []
+  Agent: {fileID: 0}
+  goal: []
 --- !u!1001 &7268417015027364845
 PrefabInstance:
   m_ObjectHideFlags: 0

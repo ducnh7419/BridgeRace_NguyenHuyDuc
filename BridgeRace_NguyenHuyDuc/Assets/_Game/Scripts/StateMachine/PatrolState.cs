@@ -10,16 +10,25 @@ public class PatrolState : IState<Bot>
     private float timer;
     public void OnEnter(Bot bot)
     {
-        if (bot.Targets.Count<=0){
+        if (bot.Targets.Count <= 0)
+        {
             bot.GetPLatformBrick();
         }
-        
-        
+        bot.Moving();
+        randomTime=Random.Range(10f,15f);
+        bot.SetRandomTarget();
     }
 
     public void OnExecute(Bot bot)
     {
-       bot.StartCoroutine(bot.SetRandomTarget());
+        bot.Moving();
+        timer+=Time.fixedDeltaTime;
+        if(!bot.IsReachingDestination) return;         
+        if(timer>randomTime){
+            bot.ChangeState(new PassingBridge());
+        }else{
+            bot.SetRandomTarget();
+        }
     }
 
     public void OnExit(Bot bot0)

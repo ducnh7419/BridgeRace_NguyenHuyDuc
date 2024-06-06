@@ -8,7 +8,10 @@ namespace GlobalConstants
         public const string BRICK="Brick";
         public const string PLAYER="Player";
         public const string BOT="Bot";
-        public const string Stair="Stair";
+        public const string STAIR="Stair";
+        public const string DOOR="Door";
+        public const string PODIUM="Podium";
+        
 
     }
     

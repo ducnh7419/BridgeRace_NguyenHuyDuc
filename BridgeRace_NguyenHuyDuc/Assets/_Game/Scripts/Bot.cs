@@ -6,17 +6,21 @@ using UnityEngine.AI;
 
 public class Bot : Character
 {
-    private List<Brick> targets;
+    private List<Brick> targets=new();
     private IState<Bot> currentState;
-    [SerializeField] int numbersOfRandomTargetBrick = 10;
 
     [Header("NavMesh Agent")]
     public NavMeshAgent Agent;
-    private Transform goal;
+    [SerializeField]private List<Transform> goal;
     private NavMeshSurface navMeshSurface;
 
-    public Transform Goal { get => goal; set => goal = value; }
-    public List<Brick> Targets { get => targets; }
+    public Vector3 destination;
+
+    //property tra ve ket qua xem la da toi diem muc tieu hay chua
+    public bool IsReachingDestination => Vector3.Distance(TF.position, destination + (TF.position.y - destination.y) * Vector3.up) < 0.2f;
+
+    public List<Transform> Goal { get => goal;set => goal = value;  }
+    public List<Brick> Targets { get => targets;set=>targets=value; }
 
     public void ChangeState(IState<Bot> state)
     {
@@ -26,46 +30,55 @@ public class Bot : Character
 
         currentState?.OnEnter(this);
     }
-
+    
     
     protected override void OnInit()
     {
         base.OnInit();
-        Agent.speed = speed;
+        Agent.speed=speed*Time.fixedDeltaTime;
         ChangeState(new IdleState());
+       
 
     }
 
     private void Start()
     {
         OnInit();
-        Agent.SetDestination(Goal.position);
+    }
+
+    public void UntargetAll(){
+        targets.Clear();
+        Debug.Log(currentPlatform);
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        Debug.Log(isMovable);
-        if (!isMovable)
-        {
-            StopMoving();
-            return;
-        }
+        direct=Agent.velocity.z>0?Direct.Forward:Direct.Backward;
+        currentState?.OnExecute(this);
     }
 
-    public IEnumerator SetRandomTarget()
+     //set diem den
+    public void SetDestination(Vector3 destination)
     {
-        yield return new WaitForSeconds(1f);
+        this.destination = destination;
+        Agent.SetDestination(destination);
+    }
+
+    
+
+    public void SetRandomTarget()
+    {
         int rd = Random.Range(0, targets.Count);
         Brick target = targets[rd];
-        Agent.SetDestination(target.transform.position);
+        destination=targets[rd].transform.position;
+        SetDestination(destination);
     }
 
     public void GetPLatformBrick()
     {
-        int currPlatform = Platform.currentPlatform;
-        List<Brick> bricks = new List<Brick>();
-        switch (currPlatform)
+        List<Brick> bricks = new();
+        switch (currentPlatform)
         {
             case 1:
                 bricks = Platform.platformBrick1;
@@ -83,10 +96,30 @@ public class Bot : Character
         }
     }
 
-    public new void StopMoving()
+    public override void StopMoving()
     {
         // StopMoving();
-        Agent.isStopped = true;
+        base.StopMoving();
+        Agent.velocity=Vector3.zero;
+        Agent.isStopped=true;
     }
 
+    public void MoveToNextGoal(){
+        destination=goal[currentPlatform-1].position;
+        SetDestination(destination);
+        Debug.Log(goal[currentPlatform-1].position);
+    }
+
+    public override void Moving()
+    {
+        base.Moving();    
+        Agent.isStopped=false;
+    }
+
+    protected override void AwardPrize()
+    {
+        StopMoving();
+        base.AwardPrize();
+
+    }
 }

@@ -147,6 +147,7 @@ MonoBehaviour:
   ColorByEnum: 0
   characterController: {fileID: 0}
   NumberOfBricks: 0
+  IsMovable: 0
   meshRenderer: {fileID: 7851795453961102824}
   colorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
   rb: {fileID: 6531766847217719102}
@@ -156,9 +157,9 @@ MonoBehaviour:
   brickBag: {fileID: 998645338012988892}
   characterBrickPrefab: {fileID: 7698702823584376937, guid: 210546958154e70448359b742424a09e, type: 3}
   brickHolder: []
-  stepRayUpper: {fileID: 7790421835866312935}
-  stepSmooth: 0.4
   joystick: {fileID: 0}
+  stepRayUpper: {fileID: 7790421835866312935}
+  stepSmooth: 0.2
 --- !u!136 &7552452639537273047
 CapsuleCollider:
   m_ObjectHideFlags: 0
