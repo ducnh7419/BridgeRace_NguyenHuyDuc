@@ -54,6 +54,11 @@ public class Platform : MonoBehaviour
       
    }
 
+   public static void ClearPlatformBrickList(){
+      platformBrick1.Clear();
+      platformBrick2.Clear();
+   }
+
 
 
 

@@ -6,7 +6,7 @@ public class PassingBridge : IState<Bot>
 {
     public void OnEnter(Bot bot)
     {
-        bot.MoveToNextGoal();
+        bot.MoveToGoal();
     }
 
     public void OnExecute(Bot bot)
@@ -17,11 +17,7 @@ public class PassingBridge : IState<Bot>
             bot.ChangeState(new PatrolState());
             return;
         }
-        if(bot.IsReachingDestination){
-            Debug.Log("Reach");
-            bot.UntargetAll();
-            bot.ChangeState(new PatrolState());
-        }
+       
     }
 
     public void OnExit(Bot bot)

@@ -170,8 +170,9 @@ MonoBehaviour:
   ColorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
   cameraFollow: {fileID: 963194229}
   joystick: {fileID: 1967435873}
-  level:
+  levels:
   - {fileID: 8080153302330389992, guid: c54378ae7eea54d44abff58e88be632d, type: 3}
+  Rank: 0
 --- !u!1 &325025841
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14d2bbbb9bf289f47971360c0f8670a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UserData: {fileID: 409344856}
 --- !u!4 &409344855
 Transform:
   m_ObjectHideFlags: 0
@@ -260,6 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75411874494066443a83bb40a41d0439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentLevel: 1
 --- !u!1 &619446983
 GameObject:
   m_ObjectHideFlags: 0

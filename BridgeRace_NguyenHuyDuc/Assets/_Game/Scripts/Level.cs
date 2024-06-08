@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Level : MonoBehaviour
@@ -10,16 +11,18 @@ public class Level : MonoBehaviour
     [SerializeField] private Transform characterSpawnLocation;
     [SerializeField] private List<Transform> brickSpawnLocation;
     public List<Transform> PodiumPlace;
+    private List<Character> characters;
     [SerializeField] private Brick brick;
     [SerializeField] private Player player;
     [SerializeField] private Bot bot;
     [SerializeField] private int NumbersOfBot = 3;
-    [SerializeField] private List<Transform> goal;
+    [SerializeField] private Transform goal;
     public int LowestRank => NumbersOfBot+1;
 
     private void Awake()
     {
         objectColors = RandomColor();
+        characters=new();
     }
 
     private void Start(){
@@ -50,16 +53,17 @@ public class Level : MonoBehaviour
 
     public void GenerateCharacter()
     {
-        Player playerGO = SimplePool.Spawn<Player>(player, characterSpawnLocation.position, player.transform.rotation);
+        Player playerGO = SimplePool.Spawn<Player>(PoolType.Player, characterSpawnLocation.position, player.transform.rotation);
         playerGO.SetCharacterColor(objectColors[0]);
+        characters.Add(playerGO);
         characterSpawnLocation.position += new Vector3(10, 0, 0);
-        playerGO.joystick = LevelManager.Ins.joystick;
         LevelManager.Ins.cameraFollow.Target = playerGO.transform;
         for (int i = 1; i < objectColors.Count; i++)
         {
-            Bot botGO = SimplePool.Spawn<Bot>(bot, characterSpawnLocation.position, bot.transform.rotation);
+            Bot botGO = SimplePool.Spawn<Bot>(PoolType.Bot, characterSpawnLocation.position, bot.transform.rotation);
             botGO.SetCharacterColor(objectColors[i]);
             botGO.Goal = goal;
+            characters.Add(botGO);
             characterSpawnLocation.position += new Vector3(10, 0, 0);
         }
     }
@@ -106,7 +110,7 @@ public class Level : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                Brick brickGO = SimplePool.Spawn<Brick>(brick, new Vector3(x, y, z), brick.transform.rotation);
+                Brick brickGO = SimplePool.Spawn<Brick>(PoolType.Brick, new Vector3(x, y, z), brick.transform.rotation);
                 int color = 0;
                 if (brickColors.Count > 0)
                 {
@@ -143,6 +147,6 @@ public class Level : MonoBehaviour
         Platform.EnableAllPlatformBrick(Platform.platformBrick1);
     }
 
-
+    
 
 }

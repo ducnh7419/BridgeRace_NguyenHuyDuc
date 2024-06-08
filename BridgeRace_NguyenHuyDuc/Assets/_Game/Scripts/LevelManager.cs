@@ -11,9 +11,10 @@ public class LevelManager : MonoBehaviour
     public ColorData ColorData;
     public CameraFollow cameraFollow;
     public DynamicJoystick joystick;
-    [SerializeField] private List<Level> level;
-    private int currentLevel=0;
-    public int Rank=0;
+    [SerializeField] private List<Level> levels;
+    private Level generatedMap;
+    private int currentLevel = 0;
+    public int Rank = 0;
 
     private void Awake()
     {
@@ -25,34 +26,40 @@ public class LevelManager : MonoBehaviour
         {
             ins = this;
         }
-        
+
     }
 
-    private void Start(){
-        
+    public void IncreseLevel(){
+        currentLevel++;
     }
 
-    public void GenerateLevel(){
-        currentLevel=PlayerDataManager.CurrentLevel;
-        Instantiate(level[currentLevel-1]);
-        
+    public void GenerateLevel()
+    {
+        DestroyLevel();
+        Rank=0;
+        currentLevel = GameManager.Ins.UserData.CurrentLevel;
+        generatedMap = Instantiate(levels[currentLevel - 1]);    
     }
 
-    public Transform GetPodiumPlace(){
-        return level[currentLevel-1].PodiumPlace[Rank++];
+
+
+    public void DestroyLevel()
+    {
+        if (generatedMap == null)
+        {
+            return;
+        }
+        Destroy(generatedMap.gameObject);
+        SimplePool.CollectAll();
+        Platform.ClearPlatformBrickList();
+        UIManager.Ins.CloseUI<IngameUI>();
     }
 
-
-
-    
-    
-
-
-    
-
+    public Transform GetPodiumPlace()
+    {
+        return levels[currentLevel - 1].PodiumPlace[Rank++];
+    }
 
     
-
-
 
 }

@@ -6,21 +6,21 @@ using UnityEngine.AI;
 
 public class Bot : Character
 {
-    private List<Brick> targets=new();
+    private List<Brick> targets;
     private IState<Bot> currentState;
 
     [Header("NavMesh Agent")]
     public NavMeshAgent Agent;
-    [SerializeField]private List<Transform> goal;
-    private NavMeshSurface navMeshSurface;
+    [SerializeField]private Transform goal;
 
     public Vector3 destination;
 
     //property tra ve ket qua xem la da toi diem muc tieu hay chua
     public bool IsReachingDestination => Vector3.Distance(TF.position, destination + (TF.position.y - destination.y) * Vector3.up) < 0.2f;
 
-    public List<Transform> Goal { get => goal;set => goal = value;  }
+    
     public List<Brick> Targets { get => targets;set=>targets=value; }
+    public Transform Goal { get => goal; set => goal = value; }
 
     public void ChangeState(IState<Bot> state)
     {
@@ -35,10 +35,11 @@ public class Bot : Character
     protected override void OnInit()
     {
         base.OnInit();
+        targets=new();
         Agent.speed=speed*Time.fixedDeltaTime;
+        destination=Vector3.zero;
         ChangeState(new IdleState());
-       
-
+        Agent.enabled=true;
     }
 
     private void Start()
@@ -48,7 +49,6 @@ public class Bot : Character
 
     public void UntargetAll(){
         targets.Clear();
-        Debug.Log(currentPlatform);
     }
 
     protected override void FixedUpdate()
@@ -65,10 +65,16 @@ public class Bot : Character
         Agent.SetDestination(destination);
     }
 
-    
+
+    protected override void ChangePlatform(Collider other){
+        base.ChangePlatform(other);
+        UntargetAll();
+        ChangeState(new PatrolState());
+    }
 
     public void SetRandomTarget()
     {
+        if(targets.Count<=0) return;
         int rd = Random.Range(0, targets.Count);
         Brick target = targets[rd];
         destination=targets[rd].transform.position;
@@ -101,25 +107,34 @@ public class Bot : Character
         // StopMoving();
         base.StopMoving();
         Agent.velocity=Vector3.zero;
-        Agent.isStopped=true;
+        
     }
 
-    public void MoveToNextGoal(){
-        destination=goal[currentPlatform-1].position;
+    public void DisableAI(){
+        Agent.enabled=false;
+    }
+
+    public void MoveToGoal(){
+        destination=Goal.position;
         SetDestination(destination);
-        Debug.Log(goal[currentPlatform-1].position);
+    }
+
+    public void ClearDestination(){
+        Agent.ResetPath();
+        destination=Vector3.zero;
     }
 
     public override void Moving()
     {
         base.Moving();    
-        Agent.isStopped=false;
+        
     }
 
     protected override void AwardPrize()
     {
-        StopMoving();
+        ChangeState(new CelebrateState());
         base.AwardPrize();
+        
 
     }
 }

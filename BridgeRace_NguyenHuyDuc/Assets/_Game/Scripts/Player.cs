@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,15 +28,20 @@ public class Player : Character
 
     }
 
+    protected override void OnInit()
+    {
+        base.OnInit();
+        joystick=LevelManager.Ins.joystick;
+        EnableJoystick();
+        
+    }
+
     private void ControlMove()
     {
-
         if (joystick.Vertical < 0)
         {
             IsMovable = true;
         }
-
-
         if (joystick.Horizontal != 0 || joystick.Vertical != 0)
         {
             if (!IsMovable)
@@ -83,13 +89,24 @@ public class Player : Character
     protected override void AwardPrize()
     {
         base.AwardPrize();
-        joystick.enabled=false;
-        StartCoroutine(ChangeState());
+        joystick.gameObject.SetActive(false);
+        if(LevelManager.Ins.Rank<=3){
+            GameManager.Ins.CurrentResult=GameManager.GameResult.Win;
+        }else{
+            GameManager.Ins.CurrentResult=GameManager.GameResult.Lose;
+        }
+        StartCoroutine(ChangeGameState());
     }
 
-    IEnumerator ChangeState(){
+    IEnumerator ChangeGameState(){
         yield return new WaitForSeconds(3);
+        Time.timeScale=0;
         GameManager.Ins.ChangeState(GameManager.State.EndGame);
+    }
+
+    public void EnableJoystick(){
+        joystick.OnPointerUp(null);
+        joystick.gameObject.SetActive(true);
     }
 
     private void OnDrawGizmos()

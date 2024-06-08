@@ -9,10 +9,9 @@ public class Character : GameUnit
 {
 
     public ColorByEnum ColorByEnum;
-    protected int currentPlatform = 1;
+    protected int currentPlatform;
 
     [SerializeField] protected CharacterController characterController;
-    public int NumberOfBricks = 0;
     private float brickHeight;
 
     public bool IsMovable;
@@ -28,7 +27,7 @@ public class Character : GameUnit
     [Header("Character Brick")]
     public CharacterBrick characterBrickPrefab;
     public List<CharacterBrick> brickHolder;
-    protected List<GameObject> blockedDoor = new List<GameObject>();
+    protected List<GameObject> blockedDoor;
 
     protected enum Direct
     {
@@ -41,15 +40,24 @@ public class Character : GameUnit
 
 
 
-    private void Awake()
+    private void Start()
     {
-        IsMovable = true;
+        OnInit();
 
+    }
+
+    private void OnEnable() {
+         OnInit();
     }
 
     protected virtual void OnInit()
     {
-
+        StopMoving();
+        IsMovable=true;
+        brickHeight=0;
+        currentPlatform=1;
+        blockedDoor=new ();
+        brickHolder=new ();
     }
 
     protected virtual void AwardPrize()
@@ -124,7 +132,7 @@ public class Character : GameUnit
     protected void DropBrick(){
         for(int i=0;i<brickHolder.Count;i++){
             SimplePool.Despawn(brickHolder[i]);
-            brickHolder.RemoveAt(i);
+            
         }
     }
 
@@ -148,8 +156,9 @@ public class Character : GameUnit
 
     private void OnTriggerEnter(Collider other)
     {
+        CollideWithDoor(other);
         CollideWithBrick(other);
-        ChangePlatform(other);
+        
         ReachingPodium(other);
     }
 
@@ -171,16 +180,21 @@ public class Character : GameUnit
         brick.TurnOff();
     }
 
-    protected void ChangePlatform(Collider other)
-    {
+    private void CollideWithDoor(Collider other){
         if (!other.CompareTag(GlobalConstants.Tag.DOOR)) return;
+        ChangePlatform(other);
+
+    }
+
+    protected virtual void ChangePlatform(Collider other)
+    {
         GameObject door = CacheCollider<GameObject>.GetCollider(other);
-        if (blockedDoor.Contains(door))
-        {
-            Debug.Log("Stop");
-            StopMoving();
-            return;
-        }
+        // if (blockedDoor.Contains(door))
+        // {
+        //     Debug.Log("Stop");
+        //     StopMoving();
+        //     return;
+        // }
         blockedDoor.Add(door);
         ++currentPlatform;
         Platform.EnablePlatform(currentPlatform, (int)ColorByEnum);

@@ -637,9 +637,7 @@ MonoBehaviour:
   player: {fileID: 4287573732393444127, guid: 5490fc29182bbab499b3fafc92b379ed, type: 3}
   bot: {fileID: 2501855390729175218, guid: 6072c25f165b06b49973bdfdf6942891, type: 3}
   NumbersOfBot: 3
-  goal:
-  - {fileID: 6152935537040188959}
-  - {fileID: 7535473549646253917}
+  goal: {fileID: 7535473549646253917}
 --- !u!1001 &129648240486825736
 PrefabInstance:
   m_ObjectHideFlags: 0

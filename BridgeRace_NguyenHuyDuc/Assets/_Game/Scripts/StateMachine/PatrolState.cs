@@ -31,7 +31,7 @@ public class PatrolState : IState<Bot>
         }
     }
 
-    public void OnExit(Bot bot0)
+    public void OnExit(Bot bot)
     {
 
     }
