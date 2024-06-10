@@ -6,26 +6,24 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     public ColorData ColorData;
-    [SerializeField]private int level;
+    [SerializeField] private int level;
     private List<int> objectColors;
     [SerializeField] private Transform characterSpawnLocation;
     [SerializeField] private List<Transform> brickSpawnLocation;
     public List<Transform> PodiumPlace;
-    private List<Character> characters;
     [SerializeField] private Brick brick;
     [SerializeField] private Player player;
     [SerializeField] private Bot bot;
     [SerializeField] private int NumbersOfBot = 3;
     [SerializeField] private Transform goal;
-    public int LowestRank => NumbersOfBot+1;
 
     private void Awake()
     {
         objectColors = RandomColor();
-        characters=new();
     }
 
-    private void Start(){
+    private void Start()
+    {
         GenerateLevel(level);
     }
 
@@ -51,23 +49,31 @@ public class Level : MonoBehaviour
         return objectColors;
     }
 
-    public void GenerateCharacter()
+    /// <summary>
+    /// Method to generate character
+    /// </summary>
+    /// <param name="offset">Khoang cach giua cac ng choi </param>
+    public void GenerateCharacter(float offset)
     {
         Player playerGO = SimplePool.Spawn<Player>(PoolType.Player, characterSpawnLocation.position, player.transform.rotation);
         playerGO.SetCharacterColor(objectColors[0]);
-        characters.Add(playerGO);
-        characterSpawnLocation.position += new Vector3(10, 0, 0);
+        characterSpawnLocation.position += new Vector3(offset, 0, 0);
         LevelManager.Ins.cameraFollow.Target = playerGO.transform;
         for (int i = 1; i < objectColors.Count; i++)
         {
             Bot botGO = SimplePool.Spawn<Bot>(PoolType.Bot, characterSpawnLocation.position, bot.transform.rotation);
             botGO.SetCharacterColor(objectColors[i]);
             botGO.Goal = goal;
-            characters.Add(botGO);
-            characterSpawnLocation.position += new Vector3(10, 0, 0);
+            characterSpawnLocation.position += new Vector3(offset, 0, 0);
         }
     }
 
+    /// <summary>
+    /// Shuffle colors queue
+    /// </summary>
+    /// <param name="queue"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public Queue<T> ShuffleQueue<T>(Queue<T> queue)
     {
         // Convert queue to a list
@@ -89,8 +95,15 @@ public class Level : MonoBehaviour
         return shuffledQueue;
     }
 
-    //
-    public void GenerateBrick(int width, int height, Transform brickSpawnLocation, ref List<Brick> platformBrick)
+    /// <summary>
+    /// Method to generate platform brick
+    /// </summary>
+    /// <param name="width">Numbers of horizontal brick</param>
+    /// <param name="height">Numbers of Vertical brick</param>
+    /// <param name="brickSpawnLocation"></param>
+    /// <param name="platformBrick">Where to store created platform brick</param>
+    /// <param name="offset">distance between bricks</param>
+    public void GenerateBrick(int width, int height, Transform brickSpawnLocation, ref List<Brick> platformBrick,float offset)
     {
         int totalBrick = width * height;
         Queue<int> brickColors = new Queue<int>();
@@ -110,43 +123,61 @@ public class Level : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                Brick brickGO = SimplePool.Spawn<Brick>(PoolType.Brick, new Vector3(x, y, z), brick.transform.rotation);
-                int color = 0;
-                if (brickColors.Count > 0)
+                Vector3 pos = new(x, y, z);
+                if (HasGround(pos))
                 {
-                    color = brickColors.Dequeue();
-                    brickGO.SetBrickColor(color);
+                    Brick brickGO = SimplePool.Spawn<Brick>(PoolType.Brick, pos, brick.transform.rotation);
+                    int color = 0;
+                    if (brickColors.Count > 0)
+                    {
+                        color = brickColors.Dequeue();
+                        brickGO.SetBrickColor(color);
+                    }
+                    else
+                    {
+                        color = objectColors[Random.Range(1, objectColors.Count)];
+                        brickGO.SetBrickColor(color);
+                    }
+                    platformBrick.Add(brickGO);
                 }
-                else
-                {
-                    color = objectColors[Random.Range(1, objectColors.Count)];
-                    brickGO.SetBrickColor(color);
-                }
-                platformBrick.Add(brickGO);
-
-                x += 5;
+                x += offset;
             }
             x = brickSpawnLocation.position.x;
-            z += 5;
+            z += offset;
         }
     }
 
+    /// <summary>
+    /// Check if current postion have ground
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private bool HasGround(Vector3 position)
+    {
+        if (Physics.Raycast(position, Vector3.down, out RaycastHit hit, .8f,1<<7))
+        {
+            return true;
+        }
+        return false;
+
+    }
     public void GenerateLevel(int level)
     {
-        GenerateCharacter();
+        
         switch (level)
         {
             case 1:
-                GenerateBrick(10, 10, brickSpawnLocation[0], ref Platform.platformBrick1);
-                GenerateBrick(8, 5, brickSpawnLocation[1], ref Platform.platformBrick2);
+                GenerateCharacter(10f);
+                GenerateBrick(10, 10, brickSpawnLocation[0], ref Platform.platformBrick1,5f);
+                GenerateBrick(8, 5, brickSpawnLocation[1], ref Platform.platformBrick2,5f);
                 break;
             case 2:
+                GenerateCharacter(3f);
+                GenerateBrick(4, 20, brickSpawnLocation[0], ref Platform.platformBrick1,3.5f);
                 break;
         }
         SimplePool.Collect(PoolType.Brick);
         Platform.EnableAllPlatformBrick(Platform.platformBrick1);
     }
-
-    
 
 }

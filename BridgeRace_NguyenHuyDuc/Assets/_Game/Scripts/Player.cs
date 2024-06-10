@@ -25,7 +25,11 @@ public class Player : Character
         {
             GoDown();
         }
+        
+    }
 
+    private void Update(){
+        UserDataManager.Ins.Score=score;
     }
 
     protected override void OnInit()
@@ -33,9 +37,12 @@ public class Player : Character
         base.OnInit();
         joystick=LevelManager.Ins.joystick;
         EnableJoystick();
-        
     }
 
+
+    /// <summary>
+    /// Moving the player using joystick
+    /// </summary>
     private void ControlMove()
     {
         if (joystick.Vertical < 0)
@@ -60,6 +67,9 @@ public class Player : Character
 
     }
 
+    /// <summary>
+    /// Move the player down
+    /// </summary>
     private void GoDown()
     {
 
@@ -69,40 +79,38 @@ public class Player : Character
         }
     }
 
+    /// <summary>
+    /// Move the player up. Use it when player going upstair
+    /// </summary>
     private void GoUpStair()
     {
         if (!Physics.Raycast(stepRayUpper.position, Vector3.forward, out RaycastHit hitUpper, .3f))
             return;
         if (IsGrounded())
         {
-            Debug.Log("A");
             rb.position -= new Vector3(0, -stepSmooth, 0);
 
         }
     }
+
     public override void StopMoving()
     {
         base.StopMoving();
-        
+        rb.velocity = Vector3.zero;
     }
 
     protected override void AwardPrize()
     {
         base.AwardPrize();
         joystick.gameObject.SetActive(false);
-        if(LevelManager.Ins.Rank<=3){
+        if(LevelManager.Ins.Rank<=2){
             GameManager.Ins.CurrentResult=GameManager.GameResult.Win;
-        }else{
-            GameManager.Ins.CurrentResult=GameManager.GameResult.Lose;
         }
+        UserDataManager.Ins.Score=score;
         StartCoroutine(ChangeGameState());
     }
 
-    IEnumerator ChangeGameState(){
-        yield return new WaitForSeconds(3);
-        Time.timeScale=0;
-        GameManager.Ins.ChangeState(GameManager.State.EndGame);
-    }
+    
 
     public void EnableJoystick(){
         joystick.OnPointerUp(null);
@@ -114,6 +122,8 @@ public class Player : Character
         Gizmos.color = Color.red;
         Gizmos.DrawLine(stepRayUpper.position, stepRayUpper.position + new Vector3(0, 0, 0.3f));
         Gizmos.DrawLine(raycastPos.position, raycastPos.position + new Vector3(0, -2f, 0));
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(TF.position,TF.position+new Vector3(0,-0.8f,0));
 
     }
 

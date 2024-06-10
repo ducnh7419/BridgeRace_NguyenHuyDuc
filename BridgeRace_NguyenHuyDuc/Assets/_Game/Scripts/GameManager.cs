@@ -6,8 +6,6 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager ins;
-
-    [SerializeField] public UserDataManager UserData;
     private State currState;
 
     private GameResult currentResult;
@@ -99,7 +97,7 @@ public class GameManager : MonoBehaviour
         if(currentResult==GameResult.Win){
             UIManager.Ins.OpenUI<Win>();
         }else{
-            // UIManager.Ins.OpenUI<Lose>();
+            UIManager.Ins.OpenUI<Lose>();
         }
 
     }

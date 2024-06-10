@@ -146,7 +146,6 @@ MonoBehaviour:
   poolType: 2
   ColorByEnum: 0
   characterController: {fileID: 0}
-  NumberOfBricks: 0
   IsMovable: 0
   meshRenderer: {fileID: 7851795453961102824}
   colorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
@@ -155,6 +154,7 @@ MonoBehaviour:
   speed: 600
   raycastPos: {fileID: 1728972143767956523}
   brickBag: {fileID: 998645338012988892}
+  droppedBrickPrefab: {fileID: 7209657604633089896, guid: 0c33cb1bfd6ebbd4fbc8a5b5396f4911, type: 3}
   characterBrickPrefab: {fileID: 7698702823584376937, guid: 210546958154e70448359b742424a09e, type: 3}
   brickHolder: []
   joystick: {fileID: 0}

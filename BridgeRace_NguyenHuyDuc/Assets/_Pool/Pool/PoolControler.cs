@@ -149,7 +149,9 @@ public enum PoolType
     Player=2,
     Bot=3,
     Stair=4,
-    CharacterBrick=5
+    CharacterBrick=5,
+    DroppedBrick=6
+
 }
 
 

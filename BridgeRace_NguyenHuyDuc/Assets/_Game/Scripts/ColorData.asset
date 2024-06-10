@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ColorData
   m_EditorClassIdentifier: 
   colorsMaterial:
-  - {fileID: 2100000, guid: 76ab953a63dec654a9906931fa24455d, type: 2}
+  - {fileID: 2100000, guid: bf582cee1ddc1424ba4d01d778160b45, type: 2}
   - {fileID: 2100000, guid: 0adf769d4505a494f92cc3de5c150219, type: 2}
   - {fileID: 2100000, guid: 67d24ef833634694eaf2a1c1dd5c6073, type: 2}
   - {fileID: 2100000, guid: 6a66ccc3f62a36e41abe2f1f0e290a0a, type: 2}

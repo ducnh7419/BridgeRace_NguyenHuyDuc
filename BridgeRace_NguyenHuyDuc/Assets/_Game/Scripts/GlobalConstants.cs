@@ -11,7 +11,8 @@ namespace GlobalConstants
         public const string STAIR="Stair";
         public const string DOOR="Door";
         public const string PODIUM="Podium";
-        
+        public const string DEADZONE="Deadzone";
+        public const string DROPPEDBRICK="DroppedBrick";
 
     }
     

@@ -29,20 +29,21 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    public void IncreseLevel(){
-        currentLevel++;
-    }
-
+    /// <summary>
+    /// Generate new level
+    /// </summary>
     public void GenerateLevel()
     {
         DestroyLevel();
         Rank=0;
-        currentLevel = GameManager.Ins.UserData.CurrentLevel;
-        generatedMap = Instantiate(levels[currentLevel - 1]);    
+        currentLevel = UserDataManager.Ins.CurrentLevel;
+        generatedMap = Instantiate(levels[currentLevel - 1]);
     }
 
 
-
+    /// <summary>
+    /// Destroy current level
+    /// </summary>
     public void DestroyLevel()
     {
         if (generatedMap == null)
@@ -55,6 +56,19 @@ public class LevelManager : MonoBehaviour
         UIManager.Ins.CloseUI<IngameUI>();
     }
 
+
+    /// <summary>
+    /// Move camera to target position
+    /// </summary>
+    /// <param name="target"></param>
+    public void ChangeCameraSpotlight(Transform target){
+        cameraFollow.Target=target;
+    }
+
+    /// <summary>
+    /// Get the position of each place 
+    /// </summary>
+    /// <returns></returns>
     public Transform GetPodiumPlace()
     {
         return levels[currentLevel - 1].PodiumPlace[Rank++];

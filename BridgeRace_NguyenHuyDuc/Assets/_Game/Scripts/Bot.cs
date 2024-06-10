@@ -133,6 +133,11 @@ public class Bot : Character
     protected override void AwardPrize()
     {
         ChangeState(new CelebrateState());
+        if(LevelManager.Ins.Rank==2){
+            LevelManager.Ins.ChangeCameraSpotlight(goal);
+            GameManager.Ins.CurrentResult=GameManager.GameResult.Lose;
+            StartCoroutine(ChangeGameState());
+        }
         base.AwardPrize();
         
 

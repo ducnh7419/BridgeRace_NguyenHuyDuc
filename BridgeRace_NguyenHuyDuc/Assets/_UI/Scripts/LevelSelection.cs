@@ -24,7 +24,7 @@ public class LevelSelection : UICanvas
     private void OnLevelButtonClicked(){
         string clickedButtonName=EventSystem.current.currentSelectedGameObject.name;
         Debug.Log(clickedButtonName);
-        GameManager.Ins.UserData.LoadGame(Convert.ToInt32(clickedButtonName));
+        UserDataManager.Ins.LoadGame(Convert.ToInt32(clickedButtonName));
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
         Close(0);
     }
