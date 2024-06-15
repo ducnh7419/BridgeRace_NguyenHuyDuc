@@ -11,15 +11,15 @@ public class Bot : Character
 
     [Header("NavMesh Agent")]
     public NavMeshAgent Agent;
-    [SerializeField]private Transform goal;
+    [SerializeField] private Transform goal;
 
     public Vector3 destination;
 
     //property tra ve ket qua xem la da toi diem muc tieu hay chua
     public bool IsReachingDestination => Vector3.Distance(TF.position, destination + (TF.position.y - destination.y) * Vector3.up) < 0.2f;
 
-    
-    public List<Brick> Targets { get => targets;set=>targets=value; }
+
+    public List<Brick> Targets { get => targets; set => targets = value; }
     public Transform Goal { get => goal; set => goal = value; }
 
     public void ChangeState(IState<Bot> state)
@@ -30,16 +30,16 @@ public class Bot : Character
 
         currentState?.OnEnter(this);
     }
-    
-    
+
+
     protected override void OnInit()
     {
         base.OnInit();
-        targets=new();
-        Agent.speed=speed*Time.fixedDeltaTime;
-        destination=Vector3.zero;
+        targets = new();
+        Agent.speed = speed * Time.fixedDeltaTime;
+        destination = Vector3.zero;
         ChangeState(new IdleState());
-        Agent.enabled=true;
+        Agent.enabled = true;
     }
 
     private void Start()
@@ -47,18 +47,19 @@ public class Bot : Character
         OnInit();
     }
 
-    public void UntargetAll(){
+    public void UntargetAll()
+    {
         targets.Clear();
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        direct=Agent.velocity.z>0?Direct.Forward:Direct.Backward;
+        direct = Agent.velocity.z > 0 ? Direct.Forward : Direct.Backward;
         currentState?.OnExecute(this);
     }
 
-     //set diem den
+    //set diem den
     public void SetDestination(Vector3 destination)
     {
         this.destination = destination;
@@ -66,33 +67,29 @@ public class Bot : Character
     }
 
 
-    protected override void ChangePlatform(Collider other){
+    protected override void ChangePlatform(Collider other)
+    {
         base.ChangePlatform(other);
-        UntargetAll();
-        ChangeState(new PatrolState());
+        if(currentPlatform<LevelManager.Ins.GetNumberOfPlatform()-1){
+            UntargetAll();
+            ChangeState(new PatrolState());
+        }else{
+            ChangeState(new CelebrateState());
+        }
     }
 
     public void SetRandomTarget()
     {
-        if(targets.Count<=0) return;
+        if (targets.Count <= 0) return;
         int rd = Random.Range(0, targets.Count);
         Brick target = targets[rd];
-        destination=targets[rd].transform.position;
+        destination = targets[rd].transform.position;
         SetDestination(destination);
     }
 
     public void GetPLatformBrick()
     {
-        List<Brick> bricks = new();
-        switch (currentPlatform)
-        {
-            case 1:
-                bricks = Platform.platformBrick1;
-                break;
-            case 2:
-                bricks = Platform.platformBrick2;
-                break;
-        }
+        List<Brick> bricks = LevelManager.Ins.GetPLatformBricks(currentPlatform);
         for (int i = 0; i < bricks.Count; i++)
         {
             if (ColorByEnum == bricks[i].ColorByEnum)
@@ -106,40 +103,46 @@ public class Bot : Character
     {
         // StopMoving();
         base.StopMoving();
-        Agent.velocity=Vector3.zero;
-        
+        Agent.velocity = Vector3.zero;
+
     }
 
-    public void DisableAI(){
-        Agent.enabled=false;
+    public void DisableAI()
+    {
+        Agent.enabled = false;
     }
 
-    public void MoveToGoal(){
-        destination=Goal.position;
+    public void MoveToGoal()
+    {
+        destination = Goal.position;
         SetDestination(destination);
     }
 
-    public void ClearDestination(){
+    public void ClearDestination()
+    {
         Agent.ResetPath();
-        destination=Vector3.zero;
+        destination = Vector3.zero;
     }
 
     public override void Moving()
     {
-        base.Moving();    
-        
+        base.Moving();
+
     }
 
     protected override void AwardPrize()
     {
-        ChangeState(new CelebrateState());
-        if(LevelManager.Ins.Rank==2){
+        StopMoving();
+        ClearDestination();
+        DisableAI();
+        if (LevelManager.Ins.Rank == 2)
+        {
             LevelManager.Ins.ChangeCameraSpotlight(goal);
-            GameManager.Ins.CurrentResult=GameManager.GameResult.Lose;
+            GameManager.Ins.CurrentResult = GameManager.GameResult.Lose;
             StartCoroutine(ChangeGameState());
         }
         base.AwardPrize();
-        
+
 
     }
 }

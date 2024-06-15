@@ -29,6 +29,10 @@ public class LevelManager : MonoBehaviour
 
     }
 
+    public int GetNumberOfPlatform(){
+        return generatedMap.NumberOfPlatforms;
+    }
+
     /// <summary>
     /// Generate new level
     /// </summary>
@@ -52,7 +56,6 @@ public class LevelManager : MonoBehaviour
         }
         Destroy(generatedMap.gameObject);
         SimplePool.CollectAll();
-        Platform.ClearPlatformBrickList();
         UIManager.Ins.CloseUI<IngameUI>();
     }
 
@@ -71,9 +74,17 @@ public class LevelManager : MonoBehaviour
     /// <returns></returns>
     public Transform GetPodiumPlace()
     {
-        return levels[currentLevel - 1].PodiumPlace[Rank++];
+        Transform pos= generatedMap.PodiumPlace[Rank];
+        Rank++;
+        return pos;
     }
 
-    
+    public void EnableLevelPlatform(int platform,int color){
+        generatedMap.EnableLevelPlatform(platform,color);
+    }
+
+    public List<Brick> GetPLatformBricks(int platform){
+        return generatedMap.GetPLatformBricks(platform);
+    }
 
 }

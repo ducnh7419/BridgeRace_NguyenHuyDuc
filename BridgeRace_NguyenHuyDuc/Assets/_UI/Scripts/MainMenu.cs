@@ -14,12 +14,13 @@ public class MainMenu: UICanvas
 
     public void OnPlayButtonClicked()
     {
+        UserDataManager.Ins.LoadGame();
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
         Close(0);
     }
 
     public void OnLevelSelectionButtonClicked(){
-        UIManager.Ins.OpenUI<LevelSelection>();
+        GameManager.Ins.ChangeState(GameManager.State.LevelSelection);
         Close(0);
     }
 }

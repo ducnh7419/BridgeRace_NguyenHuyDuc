@@ -17,6 +17,7 @@ public class Character : GameUnit
     private float brickHeight;
     protected int score;
     public bool IsMovable;
+    protected bool isBlockedByDoor;
 
     private string currAnim = "idle";
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
@@ -31,7 +32,7 @@ public class Character : GameUnit
     public CharacterBrick characterBrickPrefab;
 
     public List<CharacterBrick> brickHolder;
-    protected List<GameObject> blockedDoor;
+    private List<Door> blockedDoors=new();
 
     protected enum Direct
     {
@@ -46,7 +47,6 @@ public class Character : GameUnit
     private void Start()
     {
         OnInit();
-
     }
 
     private void OnEnable()
@@ -59,9 +59,10 @@ public class Character : GameUnit
     {
         StopMoving();
         IsMovable = true;
+        isBlockedByDoor=false;
         brickHeight = 0;
-        currentPlatform = 1;
-        blockedDoor = new();
+        currentPlatform = 0;
+        blockedDoors=new();
         brickHolder = new();
         score = 0;
     }
@@ -73,18 +74,21 @@ public class Character : GameUnit
     {
         StopMoving();
         IsMovable = false;
+        int rank=LevelManager.Ins.Rank;
         Transform place = LevelManager.Ins.GetPodiumPlace();
         TF.SetPositionAndRotation(place.position, Quaternion.Euler(Vector3.up * -180));
-        Dance(Random.Range(1, 5));
+        if (rank == 0)
+        {
+            ChangeAnim("victory");
+            return;
+        }else{
+            Dance(Random.Range(1, 5));
+        }
     }
 
     protected void Dance(int number)
     {
-        if (LevelManager.Ins.Rank == 0)
-        {
-            ChangeAnim("victory");
-            return;
-        }
+        
         switch (number)
         {
             case 1:
@@ -137,15 +141,6 @@ public class Character : GameUnit
         ChangeAnim("kick");
     }
 
-    protected bool IsGrounded()
-    {
-        if (Physics.Raycast(TF.position, Vector3.down, out RaycastHit hit, .2f, 1 << 7))
-        {
-            return true;
-        }
-        return false;
-
-    }
 
     public void SetCharacterColor(int index)
     {
@@ -253,22 +248,21 @@ public class Character : GameUnit
     private void CollideWithDoor(Collider other)
     {
         if (!other.CompareTag(GlobalConstants.Tag.DOOR)) return;
+        Door door = CacheCollider<Door>.GetCollider(other);   
+        if (blockedDoors.Contains(door))
+        {
+            isBlockedByDoor=true;
+            Debug.Log("Blocked");
+            return;
+        }
+        blockedDoors.Add(door);
         ChangePlatform(other);
-
     }
 
     protected virtual void ChangePlatform(Collider other)
     {
-        GameObject door = CacheCollider<GameObject>.GetCollider(other);
-        if (blockedDoor.Contains(door))
-        {
-            Debug.Log("Stop");
-            StopMoving();
-            return;
-        }
-        blockedDoor.Add(door);
         ++currentPlatform;
-        Platform.EnablePlatform(currentPlatform, (int)ColorByEnum);
+        LevelManager.Ins.EnableLevelPlatform(currentPlatform, (int)ColorByEnum);
     }
 
     public void ConstructingBridge()

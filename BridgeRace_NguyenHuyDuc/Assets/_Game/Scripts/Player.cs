@@ -49,10 +49,15 @@ public class Player : Character
         {
             IsMovable = true;
         }
+        if (joystick.Vertical > 0)
+        {
+            isBlockedByDoor = false;
+        }
         if (joystick.Horizontal != 0 || joystick.Vertical != 0)
         {
-            if (!IsMovable)
+            if (!IsMovable||isBlockedByDoor)
             {
+                StopMoving();
                 return;
             }
             rb.velocity = new Vector3(joystick.Horizontal * speed * Time.fixedDeltaTime, 0, joystick.Vertical * speed * Time.fixedDeltaTime);
@@ -67,13 +72,25 @@ public class Player : Character
 
     }
 
+     protected bool OnGrounded()
+    {
+        if (Physics.Raycast(TF.position, Vector3.down, out RaycastHit hit, .2f))
+        {
+            return true;
+        }
+        return false;
+
+    }
+
     /// <summary>
     /// Move the player down
     /// </summary>
     private void GoDown()
     {
-
-        if (!IsGrounded())
+        if (!Physics.Raycast(stepRayUpper.position, Vector3.down, out RaycastHit hit, 3f,1<<3))
+            return;
+        Debug.Log(hit.collider.tag);
+        if (!OnGrounded())
         {
             rb.position -= new Vector3(0, stepSmooth, 0);
         }
@@ -84,12 +101,10 @@ public class Player : Character
     /// </summary>
     private void GoUpStair()
     {
-        if (!Physics.Raycast(stepRayUpper.position, Vector3.forward, out RaycastHit hitUpper, .3f))
+        if (!Physics.Raycast(stepRayUpper.position, Vector3.forward, out RaycastHit hitUpper, .3f,1<<3))
             return;
-        if (IsGrounded())
-        {
+        if (OnGrounded()){
             rb.position -= new Vector3(0, -stepSmooth, 0);
-
         }
     }
 
@@ -121,7 +136,7 @@ public class Player : Character
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(stepRayUpper.position, stepRayUpper.position + new Vector3(0, 0, 0.3f));
-        Gizmos.DrawLine(raycastPos.position, raycastPos.position + new Vector3(0, -2f, 0));
+        Gizmos.DrawLine(stepRayUpper.position, raycastPos.position + new Vector3(0, -1f, 0));
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(TF.position,TF.position+new Vector3(0,-0.8f,0));
 

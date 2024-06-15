@@ -31,7 +31,7 @@ public class UserDataManager : MonoBehaviour
         PlayerPrefs.SetInt("level", CurrentLevel);
     }
 
-    public  int LoadGame(){
-        return PlayerPrefs.GetInt("level");
+    public  void LoadGame(){
+        CurrentLevel= PlayerPrefs.GetInt("level");
     }
 }

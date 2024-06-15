@@ -44,4 +44,7 @@ public class Brick : GameUnit
         SimplePool.Spawn(this);
     }
 
+    public void Despawn(){
+       SimplePool.Despawn(this);
+    }
 }

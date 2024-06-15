@@ -3,26 +3,134 @@ using System.Collections.Generic;
 using GlobalEnum;
 using UnityEngine;
 
-public class Platform : MonoBehaviour
+public class Platform
 {
+   public List<Brick> PlatformBricks = new();
+   private float brickOffsets;
+   private int width;
+   private int height;
+   public float BrickOffsets { get => brickOffsets; set => brickOffsets = value; }
+   public int Width { get => width; set => width = value; }
+   public int Height { get => height; set => height = value; }
 
-   public static List<Brick> platformBrick1 = new();
-   public static List<Brick> platformBrick2 = new();
+   /// <summary>
+   /// Shuffle colors queue
+   /// </summary>
+   /// <param name="queue"></param>
+   /// <typeparam name="T"></typeparam>
+   /// <returns></returns>
+   public Queue<T> ShuffleQueue<T>(Queue<T> queue)
+   {
+      // Convert queue to a list
+      List<T> list = new List<T>(queue);
+
+      // Shuffle the list using Fisher-Yates algorithm
+      int n = list.Count;
+      System.Random random = new System.Random();
+      for (int i = n - 1; i > 0; i--)
+      {
+         int j = random.Next(0, i + 1);
+         T temp = list[i];
+         list[i] = list[j];
+         list[j] = temp;
+      }
+
+      // Convert the list back to a queue
+      Queue<T> shuffledQueue = new Queue<T>(list);
+      return shuffledQueue;
+   }
+
+   /// <summary>
+   /// Method to generate platform brick
+   /// </summary>
+   /// <param name="width">Numbers of horizontal brick</param>
+   /// <param name="height">Numbers of Vertical brick</param>
+   /// <param name="brickSpawnLocation"></param>
+   /// <param name="platformBrick">Where to store created platform brick</param>
+   /// <param name="offset">distance between bricks</param>
+   public void GenerateBrick(Transform brickSpawnLocation, List<int> objectColors)
+   {
+      int totalBrick = width * height;
+      Queue<int> brickColors = new Queue<int>();
+
+      for (int i = 0; i < objectColors.Count; i++)
+      {
+         for (int j = 0; j < totalBrick / objectColors.Count; j++)
+         {
+            brickColors.Enqueue(objectColors[i]);
+         }
+      }
+      brickColors = ShuffleQueue<int>(brickColors);
+      float z = brickSpawnLocation.position.z;
+      float x = brickSpawnLocation.position.x;
+      float y = brickSpawnLocation.position.y;
+      for (int i = 0; i < width; i++)
+      {
+         for (int j = 0; j < height; j++)
+         {
+            Vector3 pos = new(x, y, z);
+            if (HasGround(pos) && !HasWall(pos))
+            {
+               Brick brickGO = SimplePool.Spawn<Brick>(PoolType.Brick);
+               brickGO.TF.position=pos;
+               int color = 0;
+               if (brickColors.Count > 0)
+               {
+                  color = brickColors.Dequeue();
+                  brickGO.SetBrickColor(color);
+               }
+               else
+               {
+                  color = objectColors[Random.Range(1, objectColors.Count)];
+                  brickGO.SetBrickColor(color);
+               }
+               PlatformBricks.Add(brickGO);
+            }
+            x += brickOffsets;
+         }
+         x = brickSpawnLocation.position.x;
+         z += brickOffsets;
+      }
+   }
+
+   /// <summary>
+   /// Check if current postion have ground
+   /// </summary>
+   /// <param name="position"></param>
+   /// <returns></returns>
+   private bool HasGround(Vector3 position)
+   {
+      if (Physics.Raycast(position, Vector3.down, out RaycastHit hit, .8f, 1 << 7))
+      {
+         return true;
+      }
+      return false;
+   }
+
+   private bool HasWall(Vector3 position)
+   {
+      if (Physics.Raycast(position, Vector3.up, out RaycastHit hit, 1f))
+      {
+         return true;
+      }
+      return false;
+   }
 
    /// <summary>
    /// Function to Enable bricks which have the same color
    /// </summary>
    /// <param name="platformBrick"></param>
    /// <param name="color"></param>
-   public static void EnablePlatformBrick(List<Brick> platformBrick, int color)
-   {      
-      for (int i = 0; i < platformBrick.Count; i++)
+   public void EnablePlatformBrick( int color)
+   {
+      for (int i = 0; i < PlatformBricks.Count; i++)
       {
-         if (platformBrick[i].ColorByEnum == (ColorByEnum)color)
+         if (PlatformBricks[i].ColorByEnum == (ColorByEnum)color)
          {
-            
-            Brick brickGO=SimplePool.Spawn<Brick>(platformBrick[i],platformBrick[i].TF.position, platformBrick[i].TF.rotation);
+
+            Brick brickGO = SimplePool.Spawn<Brick>(PlatformBricks[i], PlatformBricks[i].transform.position, PlatformBricks[i].transform.rotation);
             brickGO.SetBrickColor(color);
+            PlatformBricks[i]=brickGO;
          }
       }
    }
@@ -32,13 +140,13 @@ public class Platform : MonoBehaviour
    /// </summary>
    /// <param name="platformBrick"></param>
    /// <param name="color"></param>
-   public static void DisablePlatformBrick(List<Brick> platformBrick, int color)
+   public void DisablePlatformBrick( int color)
    {
-      for (int i = 0; i < platformBrick.Count; i++)
+      for (int i = 0; i < PlatformBricks.Count; i++)
       {
-         if (platformBrick[i].ColorByEnum == (ColorByEnum)color)
+         if (PlatformBricks[i].ColorByEnum == (ColorByEnum)color)
          {
-            SimplePool.Despawn(platformBrick[i]);
+           PlatformBricks[i].Despawn();
          }
       }
    }
@@ -47,40 +155,25 @@ public class Platform : MonoBehaviour
    /// Function to enable all brick in platform
    /// </summary>
    /// <param name="platformBrick"></param>
-   public static void EnableAllPlatformBrick(List<Brick> platformBrick)
+   public void EnableAllPlatformBrick()
    {
-      for (int i = 0; i < platformBrick.Count; i++)
+      for (int i = 0; i < PlatformBricks.Count; i++)
       {
-         Brick brickGO=SimplePool.Spawn<Brick>(platformBrick[i],platformBrick[i].transform.position, platformBrick[i].transform.rotation);
-         brickGO.SetBrickColor((int)platformBrick[i].ColorByEnum);
+         Brick brickGO = SimplePool.Spawn<Brick>(PlatformBricks[i], PlatformBricks[i].transform.position, PlatformBricks[i].transform.rotation);
+         brickGO.SetBrickColor((int)PlatformBricks[i].ColorByEnum);
+         PlatformBricks[i]=brickGO;
       }
    }
 
-   /// <summary>
-   /// Generate bricks on one platform on disable its on these others
-   /// </summary>
-   /// <param name="platform"></param>
-   /// <param name="color"></param>
-   public static void EnablePlatform(int platform,int color){
-      switch (platform){
-         case 2:
-            EnablePlatformBrick(platformBrick2, color);
-            DisablePlatformBrick(platformBrick1, color);
-            break;
-         case 3:
-            
-            break;
-      }
-      
-   }
 
-   /// <summary>
-   /// Delete all elements in platform brick list
-   /// </summary>
-   public static void ClearPlatformBrickList(){
-      platformBrick1.Clear();
-      platformBrick2.Clear();
-   }
+
+   // /// <summary>
+   // /// Delete all elements in platform brick list
+   // /// </summary>
+   // public void ClearPlatformBrickList(){
+   //    platformBrick1.Clear();
+   //    platformBrick2.Clear();
+   // }
 
 
 

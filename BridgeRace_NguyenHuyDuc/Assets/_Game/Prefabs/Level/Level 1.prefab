@@ -680,6 +680,7 @@ GameObject:
   - component: {fileID: 7406410966708609694}
   - component: {fileID: 3953626616735806395}
   - component: {fileID: 5847258407237060514}
+  - component: {fileID: 1663064716610545972}
   m_Layer: 0
   m_Name: Door
   m_TagString: Door
@@ -696,7 +697,7 @@ Transform:
   m_GameObject: {fileID: 3662500566666811750}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.5}
-  m_LocalPosition: {x: 0.1363, y: 9, z: -8.41}
+  m_LocalPosition: {x: 0.1363, y: 9, z: -9.97}
   m_LocalScale: {x: 1.1927099, y: 1, z: 1.997582}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -774,6 +775,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1663064716610545972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3662500566666811750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b59b865c4b6b0c47a2dbb70a31f7640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4142162146877014111
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,6 +799,7 @@ GameObject:
   - component: {fileID: 6977796024892573374}
   - component: {fileID: 3137026032572743546}
   - component: {fileID: 163400250894010985}
+  - component: {fileID: 4409860004348329137}
   m_Layer: 0
   m_Name: Door
   m_TagString: Door
@@ -874,12 +888,24 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &4409860004348329137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4142162146877014111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b59b865c4b6b0c47a2dbb70a31f7640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4263291410136512777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2292,6 +2318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ColorData: {fileID: 11400000, guid: 2af554ed086c8284a958d3d0053c9f9d, type: 2}
   level: 1
+  numberOfPlatforms: 3
   characterSpawnLocation: {fileID: 7708808166676864814}
   brickSpawnLocation:
   - {fileID: 8293238356177120855}

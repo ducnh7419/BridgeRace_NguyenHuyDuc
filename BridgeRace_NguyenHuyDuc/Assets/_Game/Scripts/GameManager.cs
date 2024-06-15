@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
                 OnMainMenu();
                 break;
             case State.LevelSelection:
+                OnLevelSelectionMenu();
                 break;
             case State.StartGame:
                 OnStartGame();
@@ -69,6 +70,11 @@ public class GameManager : MonoBehaviour
                 OnEndGame();
                 break;
         }
+    }
+
+    private void OnLevelSelectionMenu()
+    {
+        UIManager.Ins.OpenUI<LevelSelection>();
     }
 
     private void OnMainMenu()
@@ -125,6 +131,8 @@ public class GameManager : MonoBehaviour
 
     public void GoBackward()
     {
-        ChangeState(--currState);
+        Debug.Log(currState);
+        currState--;
+        ChangeState(currState);
     }
 }
