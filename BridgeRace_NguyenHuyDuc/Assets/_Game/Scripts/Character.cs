@@ -124,7 +124,7 @@ public class Character : GameUnit
         Vector3 pos = TF.position + new Vector3(Random.Range(-3f, 3f), 0.2f, Random.Range(-3f, 3f));
         for (int i = 0; i < brickHolder.Count; i++)
         {
-            Quaternion rot = Quaternion.Euler(droppedBrickPrefab.TF.rotation.eulerAngles + new Vector3(droppedBrickPrefab.TF.rotation.y, Random.Range(-90f, 90f), 0));
+            Quaternion rot = Quaternion.Euler(droppedBrickPrefab.TF.rotation.eulerAngles + new Vector3(droppedBrickPrefab.TF.rotation.y, Random.Range(-180f, 180f), 0));
             DroppedBrick droppedBrick = SimplePool.Spawn<DroppedBrick>(droppedBrickPrefab);
             droppedBrick.SetPosition(pos);
             droppedBrick.SetRotation(rot);
@@ -134,7 +134,7 @@ public class Character : GameUnit
 
     protected void Kick()
     {
-
+        ChangeAnim("kick");
     }
 
     protected bool IsGrounded()

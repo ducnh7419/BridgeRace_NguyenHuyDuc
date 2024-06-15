@@ -21,7 +21,7 @@ public class Platform : MonoBehaviour
          if (platformBrick[i].ColorByEnum == (ColorByEnum)color)
          {
             
-            Brick brickGO=SimplePool.Spawn<Brick>(platformBrick[i],platformBrick[i].transform.position, platformBrick[i].transform.rotation);
+            Brick brickGO=SimplePool.Spawn<Brick>(platformBrick[i],platformBrick[i].TF.position, platformBrick[i].TF.rotation);
             brickGO.SetBrickColor(color);
          }
       }

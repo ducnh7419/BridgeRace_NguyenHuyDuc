@@ -124,7 +124,7 @@ public class Level : MonoBehaviour
             for (int j = 0; j < height; j++)
             {
                 Vector3 pos = new(x, y, z);
-                if (HasGround(pos))
+                if (HasGround(pos)&&!HasWall(pos))
                 {
                     Brick brickGO = SimplePool.Spawn<Brick>(PoolType.Brick, pos, brick.transform.rotation);
                     int color = 0;
@@ -159,7 +159,14 @@ public class Level : MonoBehaviour
             return true;
         }
         return false;
+    }
 
+    private bool HasWall(Vector3 position){
+         if (Physics.Raycast(position, Vector3.up, out RaycastHit hit, 1f))
+        {
+            return true;
+        }
+        return false;
     }
     public void GenerateLevel(int level)
     {
@@ -174,6 +181,12 @@ public class Level : MonoBehaviour
             case 2:
                 GenerateCharacter(3f);
                 GenerateBrick(4, 20, brickSpawnLocation[0], ref Platform.platformBrick1,3.5f);
+                GenerateBrick(10, 20, brickSpawnLocation[1], ref Platform.platformBrick2,3.5f);
+                break;
+            case 3:
+                GenerateCharacter(10f);
+                GenerateBrick(5, 5, brickSpawnLocation[0], ref Platform.platformBrick1,7f);
+                GenerateBrick(10, 5, brickSpawnLocation[1], ref Platform.platformBrick2,5f);
                 break;
         }
         SimplePool.Collect(PoolType.Brick);
