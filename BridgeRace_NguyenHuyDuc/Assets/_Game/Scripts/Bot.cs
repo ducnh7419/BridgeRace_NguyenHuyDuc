@@ -78,6 +78,9 @@ public class Bot : Character
         }
     }
 
+    /// <summary>
+    /// Get randoms target from list targets(Bricks)
+    /// </summary>
     public void SetRandomTarget()
     {
         if (targets.Count <= 0) return;
@@ -87,6 +90,9 @@ public class Bot : Character
         SetDestination(destination);
     }
 
+    /// <summary>
+    /// Get bricks have the same color
+    /// </summary>
     public void GetPLatformBrick()
     {
         List<Brick> bricks = LevelManager.Ins.GetPLatformBricks(currentPlatform);
@@ -99,6 +105,9 @@ public class Bot : Character
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override void StopMoving()
     {
         // StopMoving();
@@ -112,6 +121,9 @@ public class Bot : Character
         Agent.enabled = false;
     }
 
+    /// <summary>
+    /// Set bot destination to Goal
+    /// </summary>
     public void MoveToGoal()
     {
         destination = Goal.position;
@@ -130,7 +142,8 @@ public class Bot : Character
 
     }
 
-    protected override void AwardPrize()
+
+     protected override void AwardPrize()
     {
         StopMoving();
         ClearDestination();

@@ -173,7 +173,7 @@ MonoBehaviour:
   levels:
   - {fileID: 8080153302330389992, guid: c54378ae7eea54d44abff58e88be632d, type: 3}
   - {fileID: 717073065939465324, guid: 8ef0dbf80fa7f5e4b9965e78b733ded9, type: 3}
-  - {fileID: 6970008175288942394, guid: b58eec8c9967f304281ccd95bdec1c1f, type: 3}
+  - {fileID: 8080153302330389992, guid: 6684939579ee9ef499c71cc47a557d2b, type: 3}
   Rank: 0
 --- !u!1 &180511338
 GameObject:

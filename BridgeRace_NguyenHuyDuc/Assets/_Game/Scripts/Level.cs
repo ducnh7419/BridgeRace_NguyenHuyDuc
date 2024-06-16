@@ -72,6 +72,11 @@ public class Level : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Put Brick into platform
+    /// </summary>
+    /// <param name="platformSize"></param>
+    /// <param name="offsets"></param>
     public void GeneratePlatformBricks(int[,] platformSize, float[] offsets)
     {
         for (int i = 0; i < platformSize.GetLength(0); i++)
@@ -85,6 +90,11 @@ public class Level : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Call When collide with door to enable bricks with the same color on one platform and disable on other
+    /// </summary>
+    /// <param name="platform"></param>
+    /// <param name="color"></param>
     public void EnableLevelPlatform(int platform, int color)
     {
         if (platform < NumberOfPlatforms-1) Platforms[platform].EnablePlatformBrick(color);
@@ -116,9 +126,9 @@ public class Level : MonoBehaviour
                 GeneratePlatformBricks(platformSize, offsets);
                 break;
             case 3:
-                GenerateCharacter(3f);
-                platformSize = new int[2, 2] { { 5, 5 }, { 10, 5 } };
-                offsets = new float[] { 7f, 5f };
+                GenerateCharacter(10f);
+                platformSize = new int[4, 2] { { 5, 5 }, { 10, 5 },{3,3},{4,7} };
+                offsets = new float[] { 7f, 5f,10f,3f };
                 GeneratePlatformBricks(platformSize, offsets);
                 break;
         }
