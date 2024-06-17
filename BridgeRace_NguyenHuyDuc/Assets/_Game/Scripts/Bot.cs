@@ -11,8 +11,6 @@ public class Bot : Character
 
     [Header("NavMesh Agent")]
     public NavMeshAgent Agent;
-    [SerializeField] private Transform goal;
-
     public Vector3 destination;
 
     //property tra ve ket qua xem la da toi diem muc tieu hay chua
@@ -20,7 +18,6 @@ public class Bot : Character
 
 
     public List<Brick> Targets { get => targets; set => targets = value; }
-    public Transform Goal { get => goal; set => goal = value; }
 
     public void ChangeState(IState<Bot> state)
     {
@@ -37,9 +34,9 @@ public class Bot : Character
         base.OnInit();
         targets = new();
         Agent.speed = speed * Time.fixedDeltaTime;
-        destination = Vector3.zero;
+        Agent.Warp(spawnLocation);
         ChangeState(new IdleState());
-        Agent.enabled = true;
+
     }
 
     private void Start()
@@ -70,11 +67,14 @@ public class Bot : Character
     protected override void ChangePlatform(Collider other)
     {
         base.ChangePlatform(other);
-        if(currentPlatform<LevelManager.Ins.GetNumberOfPlatform()-1){
+        if (currentPlatform < LevelManager.Ins.GetNumberOfPlatform() - 1)
+        {
             UntargetAll();
             ChangeState(new PatrolState());
-        }else{
-            ChangeState(new CelebrateState());
+        }
+        else
+        {
+            ChangeState(new MovingToGoalState());
         }
     }
 
@@ -116,9 +116,10 @@ public class Bot : Character
 
     }
 
-    public void DisableAI()
+    public IEnumerator DelayClearDest()
     {
-        Agent.enabled = false;
+        yield return new WaitForSeconds(1f);
+        ClearDestination();
     }
 
     /// <summary>
@@ -126,36 +127,28 @@ public class Bot : Character
     /// </summary>
     public void MoveToGoal()
     {
-        destination = Goal.position;
+        Transform goal = LevelManager.Ins.GetGoal();
+        destination = goal.position;
         SetDestination(destination);
     }
 
     public void ClearDestination()
     {
-        Agent.ResetPath();
         destination = Vector3.zero;
+        Agent.ResetPath();
     }
 
-    public override void Moving()
+    protected override void AwardPrize()
     {
-        base.Moving();
-
-    }
-
-
-     protected override void AwardPrize()
-    {
-        StopMoving();
-        ClearDestination();
-        DisableAI();
-        if (LevelManager.Ins.Rank == 2)
-        {
-            LevelManager.Ins.ChangeCameraSpotlight(goal);
-            GameManager.Ins.CurrentResult = GameManager.GameResult.Lose;
-            StartCoroutine(ChangeGameState());
-        }
         base.AwardPrize();
-
-
+        ChangeState(new CelebrateState());
+        if (rank> 0 && rank <= 3)
+        {
+            Transform place = GetPodiumPlace();
+            Agent.Warp(place.position);
+            TF.rotation = Quaternion.Euler(Vector3.up * 180);
+        }
     }
+
+
 }

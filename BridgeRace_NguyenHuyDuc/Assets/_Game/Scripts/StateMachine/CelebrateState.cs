@@ -9,8 +9,8 @@ public class CelebrateState : IState<Bot>
 
     private float timer;
     public void OnEnter(Bot bot)
-    {
-        bot.MoveToGoal();
+    {   
+        bot.ClearDestination();
     }
 
     public void OnExecute(Bot bot)

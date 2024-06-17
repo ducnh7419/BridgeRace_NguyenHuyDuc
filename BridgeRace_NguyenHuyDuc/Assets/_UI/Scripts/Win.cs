@@ -29,7 +29,6 @@ public class Win : UICanvas
     }
 
     public void NextLevelButtonOnClicked(){
-        LevelManager.Ins.DestroyLevel();
         UserDataManager.Ins.SaveGame();
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
         Close(0);
@@ -37,7 +36,6 @@ public class Win : UICanvas
 
     public void RetryButtonOnClicked()
     {
-        LevelManager.Ins.DestroyLevel();
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
         Close(0);
     }

@@ -25,7 +25,7 @@ public class PatrolState : IState<Bot>
         timer+=Time.fixedDeltaTime;
         if(!bot.IsReachingDestination) return;         
         if(timer>randomTime){
-            bot.ChangeState(new PassingBridge());
+            bot.ChangeState(new MovingToGoalState());
         }else{
             bot.SetRandomTarget();
         }

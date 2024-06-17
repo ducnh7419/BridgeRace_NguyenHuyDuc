@@ -106,7 +106,7 @@ public class Platform
 
    private bool HasWall(Vector3 position)
    {
-      if (Physics.Raycast(position, Vector3.up, out RaycastHit hit, 1f))
+      if (Physics.Raycast(position, Vector3.up, out RaycastHit hit, 2f))
       {
          return true;
       }

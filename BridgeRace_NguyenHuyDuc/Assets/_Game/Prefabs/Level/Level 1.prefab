@@ -2330,7 +2330,7 @@ MonoBehaviour:
   brick: {fileID: 3296268263323628884, guid: 43b0225ab14585545b07bfe2abe2ecc5, type: 3}
   player: {fileID: 4287573732393444127, guid: 5490fc29182bbab499b3fafc92b379ed, type: 3}
   bot: {fileID: 2501855390729175218, guid: 6072c25f165b06b49973bdfdf6942891, type: 3}
-  NumbersOfBot: 3
+  numbersOfBot: 3
   goal: {fileID: 7535473549646253917}
 --- !u!1001 &129648240486825736
 PrefabInstance:
@@ -2708,13 +2708,40 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8936394456429684412, guid: 1102e318be2346a4b8acc9188109dfc7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6290674089690947379}
   m_SourcePrefab: {fileID: 100100000, guid: 1102e318be2346a4b8acc9188109dfc7, type: 3}
 --- !u!4 &1388115401698384064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8215560200794205078, guid: 1102e318be2346a4b8acc9188109dfc7, type: 3}
   m_PrefabInstance: {fileID: 7007631686092976982}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2108925470821389802 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8936394456429684412, guid: 1102e318be2346a4b8acc9188109dfc7, type: 3}
+  m_PrefabInstance: {fileID: 7007631686092976982}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6290674089690947379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2108925470821389802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!4 &6159738467541881026 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3763833239822885780, guid: 1102e318be2346a4b8acc9188109dfc7, type: 3}

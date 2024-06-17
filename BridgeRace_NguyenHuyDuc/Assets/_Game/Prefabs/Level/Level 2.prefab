@@ -204,7 +204,7 @@ MonoBehaviour:
   brick: {fileID: 3296268263323628884, guid: 43b0225ab14585545b07bfe2abe2ecc5, type: 3}
   player: {fileID: 4287573732393444127, guid: 5490fc29182bbab499b3fafc92b379ed, type: 3}
   bot: {fileID: 2501855390729175218, guid: 6072c25f165b06b49973bdfdf6942891, type: 3}
-  NumbersOfBot: 3
+  numbersOfBot: 3
   goal: {fileID: 5522347941929237506}
 --- !u!1 &906335304580393841
 GameObject:
@@ -3282,8 +3282,28 @@ PrefabInstance:
       value: Pivote_Wall (8)
       objectReference: {fileID: 0}
     - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
       propertyPath: m_Size.y
-      value: 5.72
+      value: 5.8145094
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
+      propertyPath: m_Size.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
+      propertyPath: m_Center.y
+      value: -0.2995963
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220432338269935074, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
+      propertyPath: m_Center.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3753414226860548768, guid: 3c984c9780ce3c14ba90847f7a9d2e54, type: 3}
       propertyPath: m_LocalScale.x

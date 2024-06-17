@@ -7,17 +7,19 @@ using UnityEngine;
 
 public class Character : GameUnit
 {
-
+    protected int rank;
     public ColorByEnum ColorByEnum;
     protected int currentPlatform;
-    protected Transform spawnLocation;
-    public Transform SpawnLocation { get => spawnLocation; set => spawnLocation = value; }
+    protected Vector3 spawnLocation;
+    public Vector3 SpawnLocation { get => spawnLocation; set => spawnLocation = value; }
+    public int Rank { get => rank; set => rank = value; }
 
     [SerializeField] protected CharacterController characterController;
     private float brickHeight;
     protected int score;
     public bool IsMovable;
     protected bool isBlockedByDoor;
+    protected bool isOnPodium;
 
     private string currAnim = "idle";
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
@@ -52,7 +54,7 @@ public class Character : GameUnit
     private void OnEnable()
     {
         OnInit();
-        SpawnLocation = TF;
+        
     }
 
     protected virtual void OnInit()
@@ -60,30 +62,67 @@ public class Character : GameUnit
         StopMoving();
         IsMovable = true;
         isBlockedByDoor=false;
+        isOnPodium=false;
         brickHeight = 0;
         currentPlatform = 0;
         blockedDoors=new();
         brickHolder = new();
         score = 0;
+        rank=0;
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        switch (direct)
+        {
+            case Direct.Forward:
+                ConstructingBridge();
+                break;
+            case Direct.Backward:
+                IsMovable = true;
+                break;
+            case Direct.None:
+                StopMoving();
+                break;
+        }
+        ForceEndgame();
+
     }
 
     /// <summary>
-    /// Move the character to podium and make them dancing
+    /// Move the character to podium
     /// </summary>
     protected virtual void AwardPrize()
     {
-        StopMoving();
         IsMovable = false;
-        int rank=LevelManager.Ins.Rank;
-        Transform place = LevelManager.Ins.GetPodiumPlace();
-        TF.SetPositionAndRotation(place.position, Quaternion.Euler(Vector3.up * -180));
-        if (rank == 0)
-        {
+        DropBrick();
+        isOnPodium=true;
+        if(rank==1){
             ChangeAnim("victory");
-            return;
-        }else{
+        }else if(rank>1&&rank<=3){
             Dance(Random.Range(1, 5));
         }
+    }
+
+    protected Transform GetPodiumPlace(){
+        return LevelManager.Ins.GetPodiumPlace(rank);
+    }
+
+    /// <summary>
+    /// Calling once character reaching goal 
+    /// </summary>
+    private void ForceEndgame(){
+        if(GameManager.Ins.CurrState!=GameManager.State.EndGame||rank==1||isOnPodium) return;
+        Transform goal=LevelManager.Ins.GetGoal();
+        float goalDistance=Vector3.Distance(this.TF.position,goal.position);
+        LevelManager.Ins.SetGoalDistances(this,goalDistance);
+        LevelManager.Ins.ChangeCameraSpotlight(goal);
+        StartCoroutine(DelayAwardPrize());
+    }
+
+    private IEnumerator DelayAwardPrize(){
+        yield return new WaitForSeconds(1f);
+        AwardPrize();
     }
 
     protected void Dance(int number)
@@ -184,30 +223,14 @@ public class Character : GameUnit
         brickHeight = 0;
     }
 
-    protected virtual void FixedUpdate()
-    {
-        switch (direct)
-        {
-            case Direct.Forward:
-                ConstructingBridge();
-                break;
-            case Direct.Backward:
-                IsMovable = true;
-                break;
-            case Direct.None:
-                StopMoving();
-                break;
-        }
-
-
-    }
+    
 
     private void OnTriggerEnter(Collider other)
     {
         CollideWithDoor(other);
         CollideWithBrick(other);
         ReachingDeadZone(other);
-        ReachingPodium(other);
+        CollideWithGoal(other);
         CollideWithDroppedBrick(other);
     }
 
@@ -220,19 +243,22 @@ public class Character : GameUnit
         score += 2;
     }
 
-    private void ReachingPodium(Collider other)
+    private void CollideWithGoal(Collider other)
     {
         if (!other.CompareTag(GlobalConstants.Tag.PODIUM)) return;
-        DropBrick();
-        AwardPrize();
 
+        GameManager.Ins.ChangeState(GameManager.State.EndGame);
+        rank=1;
+        AwardPrize();
     }
+
+
 
     private void ReachingDeadZone(Collider other)
     {
         if (!other.CompareTag(GlobalConstants.Tag.DEADZONE)) return;
         OnInit();
-        TF.position = spawnLocation.position;
+        TF.position = spawnLocation;
     }
 
     private void CollideWithBrick(Collider other)
@@ -302,12 +328,5 @@ public class Character : GameUnit
         characterBrick.SetPosition(brickPos);
         characterBrick.SetBrickColor((int)ColorByEnum);
         brickHolder.Add(characterBrick);
-    }
-
-    protected IEnumerator ChangeGameState()
-    {
-        yield return new WaitForSeconds(5);
-        Time.timeScale = 0;
-        GameManager.Ins.ChangeState(GameManager.State.EndGame);
     }
 }

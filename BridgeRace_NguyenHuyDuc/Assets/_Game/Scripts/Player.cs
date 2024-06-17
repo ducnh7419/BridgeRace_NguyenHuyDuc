@@ -116,13 +116,22 @@ public class Player : Character
 
     protected override void AwardPrize()
     {
-        base.AwardPrize();
+        base.AwardPrize(); 
         joystick.gameObject.SetActive(false);
-        if(LevelManager.Ins.Rank<=2){
-            GameManager.Ins.CurrentResult=GameManager.GameResult.Win;
-        }
         UserDataManager.Ins.Score=score;
-        StartCoroutine(ChangeGameState());
+        if(rank==0) return;
+        if(rank==1){
+            GameManager.Ins.CurrentResult=GameManager.GameResult.Win;
+        }else{
+            GameManager.Ins.CurrentResult=GameManager.GameResult.Lose;
+            if(rank>3){
+                return;
+            }
+        }
+        Transform place=GetPodiumPlace();
+        TF.SetPositionAndRotation(place.position, Quaternion.Euler(Vector3.up * 180));
+        
+        
     }
 
     

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Ins=>ins;
 
     public GameResult CurrentResult { get => currentResult; set => currentResult = value; }
+    public State CurrState { get => currState; }
 
     public enum State{
         None=0,
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
                 OnStartGame();
                 break;
             case State.OngoingGame:
+                OnGoingGame();
                 break;
             case State.EndGame:
                 OnEndGame();
@@ -88,23 +90,28 @@ public class GameManager : MonoBehaviour
     }
 
     private void OnGoingGame(){
-        
+        UIManager.Ins.OpenUI<IngameUI>();
     }
 
     private void OnStartGame(){
         Time.timeScale=1;
         LevelManager.Ins.GenerateLevel();
-        UIManager.Ins.OpenUI<IngameUI>();
         GameManager.Ins.ChangeState(State.OngoingGame);
         
     }
 
-    private void OnEndGame(){
+    IEnumerator DelayShowingEndGameCanvas(){
+        yield return new WaitForSeconds(7);
+        Time.timeScale=0;
         if(currentResult==GameResult.Win){
             UIManager.Ins.OpenUI<Win>();
         }else{
             UIManager.Ins.OpenUI<Lose>();
         }
+    }
+
+    private void OnEndGame(){
+        StartCoroutine(DelayShowingEndGameCanvas());
 
     }
 
@@ -131,8 +138,8 @@ public class GameManager : MonoBehaviour
 
     public void GoBackward()
     {
-        Debug.Log(currState);
+        Debug.Log(CurrState);
         currState--;
-        ChangeState(currState);
+        ChangeState(CurrState);
     }
 }

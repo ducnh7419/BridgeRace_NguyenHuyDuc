@@ -16,10 +16,14 @@ public class Level : MonoBehaviour
     [SerializeField] private Brick brick;
     [SerializeField] private Player player;
     [SerializeField] private Bot bot;
-    [SerializeField] private int NumbersOfBot = 3;
+    [SerializeField] private int numbersOfBot = 3;
     [SerializeField] private Transform goal;
 
     public int NumberOfPlatforms => numberOfPlatforms;
+
+    public Transform Goal =>goal;
+
+    public int NumbersOfBot =>numbersOfBot;
 
     private void Awake()
     {
@@ -61,13 +65,14 @@ public class Level : MonoBehaviour
     {
         Player playerGO = SimplePool.Spawn<Player>(PoolType.Player, characterSpawnLocation.position, player.transform.rotation);
         playerGO.SetCharacterColor(objectColors[0]);
+        playerGO.SpawnLocation=characterSpawnLocation.position;
         characterSpawnLocation.position += new Vector3(offset, 0, 0);
         LevelManager.Ins.cameraFollow.Target = playerGO.transform;
         for (int i = 1; i < objectColors.Count; i++)
         {
             Bot botGO = SimplePool.Spawn<Bot>(PoolType.Bot, characterSpawnLocation.position, bot.transform.rotation);
             botGO.SetCharacterColor(objectColors[i]);
-            botGO.Goal = goal;
+            botGO.SpawnLocation=characterSpawnLocation.position;
             characterSpawnLocation.position += new Vector3(offset, 0, 0);
         }
     }

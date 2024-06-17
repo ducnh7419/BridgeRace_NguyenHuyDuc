@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PassingBridge : IState<Bot>
+public class MovingToGoalState : IState<Bot>
 {
     public void OnEnter(Bot bot)
     {
