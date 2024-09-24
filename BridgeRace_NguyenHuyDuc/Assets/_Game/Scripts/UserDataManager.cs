@@ -32,6 +32,6 @@ public class UserDataManager : MonoBehaviour
     }
 
     public  void LoadGame(){
-        CurrentLevel= PlayerPrefs.GetInt("level");
+        CurrentLevel= PlayerPrefs.GetInt("level",1);
     }
 }

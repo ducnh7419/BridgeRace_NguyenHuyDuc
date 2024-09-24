@@ -11,6 +11,8 @@ public class CelebrateState : IState<Bot>
     public void OnEnter(Bot bot)
     {   
         bot.ClearDestination();
+        bot.StopMoving();
+        
     }
 
     public void OnExecute(Bot bot)

@@ -25,18 +25,21 @@ public class Win : UICanvas
     {
         LevelManager.Ins.DestroyLevel();
         GameManager.Ins.ChangeState(GameManager.State.MainMenu);
+        CameraFollow.Ins.ResetCam();
         Close(0);
     }
 
     public void NextLevelButtonOnClicked(){
         UserDataManager.Ins.SaveGame();
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
+        CameraFollow.Ins.ResetCam();
         Close(0);
     }
 
     public void RetryButtonOnClicked()
     {
         GameManager.Ins.ChangeState(GameManager.State.StartGame);
+        CameraFollow.Ins.ResetCam();
         Close(0);
     }
 }

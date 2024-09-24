@@ -11,7 +11,6 @@ public class MovingToGoalState : IState<Bot>
 
     public void OnExecute(Bot bot)
     {
-        Debug.Log("Moving");
         if(!bot.IsMovable){
             bot.StopMoving();
             bot.ChangeState(new PatrolState());

@@ -140,14 +140,14 @@ public class Bot : Character
 
     protected override void AwardPrize()
     {
-        base.AwardPrize();
-        ChangeState(new CelebrateState());
+        ChangeState(new CelebrateState());          
         if (rank> 0 && rank <= 3)
         {
             Transform place = GetPodiumPlace();
             Agent.Warp(place.position);
             TF.rotation = Quaternion.Euler(Vector3.up * 180);
         }
+        base.AwardPrize();
     }
 
 

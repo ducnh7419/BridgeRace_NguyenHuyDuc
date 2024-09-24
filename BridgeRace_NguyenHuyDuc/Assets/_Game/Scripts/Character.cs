@@ -98,6 +98,7 @@ public class Character : GameUnit
         DropBrick();
         isOnPodium=true;
         if(rank==1){
+            Debug.Log("A");
             ChangeAnim("victory");
         }else if(rank>1&&rank<=3){
             Dance(Random.Range(1, 5));
@@ -117,12 +118,13 @@ public class Character : GameUnit
         float goalDistance=Vector3.Distance(this.TF.position,goal.position);
         LevelManager.Ins.SetGoalDistances(this,goalDistance);
         LevelManager.Ins.ChangeCameraSpotlight(goal);
+        CameraFollow.Ins.SetWinCam();
         StartCoroutine(DelayAwardPrize());
     }
 
     private IEnumerator DelayAwardPrize(){
         yield return new WaitForSeconds(1f);
-        AwardPrize();
+        AwardPrize();        
     }
 
     protected void Dance(int number)
@@ -153,7 +155,6 @@ public class Character : GameUnit
         if (brickHolder.Count > character.brickHolder.Count)
         {
             Kick();
-            Debug.Log("Kick");
         }
         else
         {
@@ -187,7 +188,7 @@ public class Character : GameUnit
         meshRenderer.material = colorData.GetColorByEnum(index);
     }
 
-    protected void ChangeAnim(string animName)
+    public void ChangeAnim(string animName)
     {
         if (animName != currAnim)
         {
